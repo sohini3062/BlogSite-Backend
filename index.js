@@ -6,9 +6,12 @@ const dotenv = require('dotenv').config();
 const User=require('./models/User');
 const bcrypt =require('bcryptjs');
 const jwt=require('jsonwebtoken');
+const cookieParser=require('cookie-parser');
+
+
 app.use(cors({credentials:true,origin:'http://localhost:3000'}));
 app.use(express.json());
-
+app.use(cookieParser());
 
 const secret = process.env.SECRET;
 const salt= bcrypt.genSaltSync(10);
@@ -48,8 +51,13 @@ app.post('/login',async (req,res)=>{
   }
 });
    
-
-
+app.get('/profile', (req,res) => {
+  const {token} = req.cookies;
+  jwt.verify(token, secret, {}, (err,info) => {
+    if (err) throw err;
+    res.json(info);
+  });
+});
 
 
 
