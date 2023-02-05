@@ -13,7 +13,7 @@ app.use(cors({credentials:true,origin:'http://localhost:3000'}));
 app.use(express.json());
 app.use(cookieParser());
 
-const secret = process.env.SECRET;
+const secret = process.env.SECRET; 
 const salt= bcrypt.genSaltSync(10);
 mongoose.connect(process.env.MONGO_URI);
 
@@ -52,6 +52,7 @@ app.post('/login',async (req,res)=>{
 });
    
 app.get('/profile', (req,res) => {
+ 
   const {token} = req.cookies;
   jwt.verify(token, secret, {}, (err,info) => {
     if (err) throw err;
@@ -59,7 +60,9 @@ app.get('/profile', (req,res) => {
   });
 });
 
-
+app.post('/logout', (req,res) => {
+  res.cookie('token', '').json('ok');
+});
 
 
 app.listen(4000);
